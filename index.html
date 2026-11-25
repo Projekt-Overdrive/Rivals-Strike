@@ -990,7 +990,8 @@
     </div>
   </div>
 
-  <script type="module">
+  <script>/* MP-CONFIG-PATCH:START */window.__RIVALS_MP_CONFIG__={"supabaseConfigured":true,"supabaseUrl":"https://tiaiqkbjygdgvxorsbqu.supabase.co","supabaseAnonKey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRpYWlxa2JqeWdkZ3Z4b3JzYnF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU0NjA3ODQsImV4cCI6MjExMTAzNjc4NH0.IAwy1DiFayNbAX9KggsmOGHiC90MMq--qgNsbdjEUuc"};/* MP-CONFIG-PATCH:END */</script>
+<script type="module">
     import * as THREE from 'three';
     import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
@@ -2432,7 +2433,7 @@
     // --- Live Multiplayer State & Dual Transport (Supabase Realtime Broadcast+Presence + WebSocket Fallback) ---
     const SHARED_APP_URL = 'https://ais-pre-ctagynx6toybswhzlascvf-721831828562.us-west2.run.app';
     const DEV_APP_URL = 'https://ais-dev-ctagynx6toybswhzlascvf-721831828562.us-west2.run.app';
-    const isExternalEmbedHost = /googleusercontent\.com|sites\.google\.com|^$/i.test(window.location.hostname || '');
+    const isExternalEmbedHost = /googleusercontent\.com|sites\.google\.com|github\.io|^$/i.test(window.location.hostname || '');
     const injectedMpCfg = /*__RIVALS_MP_CONFIG_JSON__*/ (typeof window !== 'undefined' && window.__RIVALS_MP_CONFIG__) || null;
     const urlParams = new URLSearchParams(window.location.search);
     const savedServerUrl = (() => { try { return localStorage.getItem('rivals_mp_server_url') || ''; } catch { return ''; } })();
@@ -4770,4 +4771,3 @@
 /* CURSOR-LOCK-PATCH:END */</script>
 </body>
 </html>
-
