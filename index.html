@@ -990,8 +990,7 @@
     </div>
   </div>
 
-  <script>/* MP-CONFIG-PATCH:START */window.__RIVALS_MP_CONFIG__={"supabaseConfigured":true,"supabaseUrl":"https://tiaiqkbjygdgvxorsbqu.supabase.co","supabaseAnonKey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRpYWlxa2JqeWdkZ3Z4b3JzYnF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU0NjA3ODQsImV4cCI6MjExMTAzNjc4NH0.IAwy1DiFayNbAX9KggsmOGHiC90MMq--qgNsbdjEUuc"};/* MP-CONFIG-PATCH:END */</script>
-<script type="module">
+  <script type="module">
     import * as THREE from 'three';
     import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
@@ -2711,7 +2710,7 @@
         deployLiveArena(msg.room.mode, msg.spawn);
         for (const peer of (msg.peers || [])) upsertRemoteActor(peer);
         syncLiveScoreboard();
-      } else if (msg.type === 'room:update') {
+      } else if (msg.type === 'room:update') { /*FIX-LEAVE-A*/ if (msg.room && msg.room.state === 'waiting' && roundState !== 'active') { roundState = 'active'; roundWinner = null; hp = maxHp; stamina = 100; liveAlive = true; reloading = false; adsToggled = false; adsBlend = 0; burstRem = 0; burstT = 0; relT = 0; document.getElementById('round-overlay').style.display = 'none'; for (const k of Object.keys(inv)) { inv[k].mag = effMag(k); inv[k].res = effRes(k); } }
         liveRoom = msg.room;
         supaLastRoomSnap = msg.room;
         if (liveRoom && Array.isArray(liveRoom.players)) {
@@ -2887,7 +2886,7 @@
         if (w === 'alpha') room.alphaScore++; else room.bravoScore++;
         room.roundWinner = w; room.state = 'match_over';
         const info = supaSerializeRoom(room);
-        supaHostBroadcast('round:end', { room: info, reason: 'forfeit' });
+        supaHostBroadcast('round:end', { room: info, reason: 'forfeit' }); /*FIX-LEAVE-B*/ room.roundTimer = setTimeout(() => { room.roundTimer = null; if (!supaHostRoom || supaHostRoom.code !== room.code || room.state !== 'match_over') return; room.state = 'waiting'; room.alphaScore = 0; room.bravoScore = 0; room.roundNumber = 1; room.roundWinner = null; const up = supaSerializeRoom(room); supaSyncLobbyPresence(); supaHostBroadcast('room:update', { room: up }); handleMpMessage({ type: 'room:update', room: up }); }, 3200);
         handleMpMessage({ type: 'round:end', room: info, reason: 'forfeit' });
         return;
       }
@@ -3096,7 +3095,7 @@
                 state: supaLastRoomSnap.state, alphaScore: supaLastRoomSnap.alphaScore, bravoScore: supaLastRoomSnap.bravoScore,
                 roundNumber: supaLastRoomSnap.roundNumber, roundWinner: supaLastRoomSnap.roundWinner,
                 maxPlayers: supaLastRoomSnap.maxPlayers, players, roundTimer: null,
-              };
+              }; /*FIX-LEAVE-C*/ { let ta = 0, tb = 0; for (const pl of supaHostRoom.players.values()) { if (pl.team === 'alpha') ta++; else tb++; } if (supaHostRoom.state === 'active' || supaHostRoom.state === 'round_over') { if (ta === 0 || tb === 0) { supaHostRoom.state = 'waiting'; supaHostRoom.alphaScore = 0; supaHostRoom.bravoScore = 0; supaHostRoom.roundNumber = 1; supaHostRoom.roundWinner = null; } else if (supaHostRoom.state === 'round_over') { supaHostRoom.roundNumber++; supaStartActiveRound(supaHostRoom); } } }
               const info = supaSerializeRoom(supaHostRoom);
               supaSyncLobbyPresence();
               supaHostBroadcast('room:update', { room: info });
